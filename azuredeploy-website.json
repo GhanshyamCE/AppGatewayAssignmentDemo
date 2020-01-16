@@ -10,6 +10,13 @@
         },
         "maxLength": 20
       },
+      "customHostname": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "description": "Optional. The custom hostname that you wish to add. Prequisite. Need to verify domain ownership via DNS records. https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain#map-your-domain. Leave blank to configure afterwards."
+        }
+      },
       "repoURL": {
         "type": "string",
         "defaultValue": "https://github.com/RoyKimYYZ/rkFunctionApp.git",
@@ -67,12 +74,46 @@
           "metadata": {
               "description": "Existing database sql admin password"
           }
+      },
+      "existingKeyVaultId" : {
+        "type": "string",
+        "metadata": {
+            "description": "Pre-existing Key Vault for source certs and secrets. Not the key vault for this application solution."
+        }    
+      },
+      "existingKeyVaultSecretName" : {
+        "type": "string",
+        "metadata": {
+            "description": "Pre-existing Key Vault secret for source certs and secrets. Not the key vault for this application solution."
+        }    
+      },
+      "certificateName" : {
+        "type": "string",
+        "metadata": {
+            "description": "SSL certificate"
+        }
       }
     },
     "variables": {
         "webSiteName": "[concat(parameters('webAppName'), '-', uniqueString(resourceGroup().id))]"
     },
     "resources": [
+      {
+        // web app certificates 
+        /*
+         Notes: For ecommerce website. Using Godaddy certificate.
+        */
+        "type": "Microsoft.Web/certificates",
+        "name": "[parameters('certificateName')]",
+        "apiVersion": "2015-08-01",
+        "location": "[parameters('location')]",
+        "properties": {
+          "keyVaultId": "[parameters('existingKeyVaultId')]",
+          "keyVaultSecretName": "[parameters('existingKeyVaultSecretName')]",
+          "serverFarmId": "[parameters('appserviceplanId')]"
+        }
+      }, 
+      
       {
           "apiVersion": "2015-08-01",
           "name": "[variables('webSiteName')]",
@@ -84,10 +125,13 @@
             "[concat('hidden-related:', parameters('hostingPlan'))]": "empty",
             "displayName": "Website"
           },
-          "dependsOn": [],
+          "dependsOn": [
+            "[parameters('certificateName')]"
+          ],
           "properties": {
             "name": "[variables('webSiteName')]",
             "serverFarmId": "[parameters('appserviceplanId')]",
+            "httpsOnly": true,
             "siteConfig": {
               "AlwaysOn": true,
               "appSettings": [
@@ -100,8 +144,15 @@
                   "value": "[concat('Server=tcp:', parameters('dbfqdn'),',1433;Initial Catalog=', parameters('databaseName'), ';Persist Security Info=False;User Id=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
                 }
               ]
-            }
-            
+            },
+            "hostNameSslStates": [
+              {
+                "name": "[parameters('customHostname')]",
+                "sslState": "SniEnabled",
+                "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', parameters('certificateName'))).Thumbprint]",
+                "toUpdate": true
+              }
+            ]
           },
         "resources": [
             
@@ -119,10 +170,35 @@
                 }
               }
             }
-           
+            // {
+            //   "apiVersion": "2015-08-01",
+            //   "name": "web",
+            //   "type": "sourcecontrols",
+            //   "dependsOn": [
+            //     "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
+            //   ],
+            //   "properties": {
+            //     "RepoUrl": "[parameters('repoURL')]",
+            //     "branch": "[parameters('branch')]",
+            //     "IsManualIntegration": true
+            //   }
+            // }
           ]
+      },
+      {
+        "apiVersion": "2016-08-01",
+        "name": "[concat(variables('websiteName'),'/',parameters('customHostname'))]",
+        "type": "Microsoft.Web/sites/hostNameBindings",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
+        ],
+        "properties": {
+          "domainId": null,
+          "hostNameType": "Verified",
+          "siteName": "parameters('websiteName')"
+        }
       }
-     
 
     ],
     "outputs": {
