@@ -1,211 +1,113 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+    "contentVersion": "1.0.0.1",
     "parameters": {
-      "webAppName": {
-        "type": "string",
-        "defaultValue": "rkfunction",
-        "metadata": {
-          "description": "Name of the azure app service. Default url will be <app name>.azurewebsites.net. Therefore, URL needs to be globally unique."
+        "siteName": {
+           "type": "string",
+           "defaultValue": "[concat('WebApp-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "The name of you Web Site."
+            }
         },
-        "maxLength": 20
-      },
-      "customHostname": {
-        "type": "string",
-        "defaultValue": "",
-        "metadata": {
-          "description": "Optional. The custom hostname that you wish to add. Prequisite. Need to verify domain ownership via DNS records. https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain#map-your-domain. Leave blank to configure afterwards."
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "sku": {
+            "type": "string",
+            "allowedValues": [
+                "F1",
+                "D1",
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "defaultValue": "F1",
+            "metadata": {
+                "description": "The pricing tier for the hosting plan."
+            }
+        },
+        "workerSize": {
+            "type": "string",
+            "allowedValues": [
+                "0",
+                "1",
+                "2"
+            ],
+            "defaultValue": "0",
+            "metadata": {
+                "description": "The instance size of the hosting plan (small, medium, or large)."
+            }
+        },
+        "repoURL": {
+            "type": "string",
+            "defaultValue": "https://github.com/Azure-Samples/app-service-web-html-get-started.git",
+            "metadata": {
+                "description": "The URL for the GitHub repository that contains the project to deploy."
+            }
+        },
+        "branch": {
+            "type": "string",
+            "defaultValue": "master",
+            "metadata": {
+                "description": "The branch of the GitHub repository to use."
+            }
         }
-      },
-      "repoURL": {
-        "type": "string",
-        "defaultValue": "https://github.com/RoyKimYYZ/rkFunctionApp.git",
-        "metadata": {
-          "description": "The URL for the GitHub repository that contains the project to deploy."
-        }
-      },
-      "branch": {
-        "type": "string",
-        "defaultValue": "master",
-        "metadata": {
-          "description": "The branch of the GitHub repository to use."
-        }
-      },
-      "location": {
-          "type": "string",
-          "defaultValue": "Canada Central",
-          "metadata": {
-          "description": "Location for all resources."
-          }
-      },
-      "hostingPlan": {
-          "type": "string",
-          "defaultValue": "hostingPlanNameTBD",
-          "metadata": {
-              "description": "Existing app service hosting plan name for this web site"
-          }
-      },
-      "appserviceplanId" : {
-          "type": "string",
-          "metadata": {
-              "description": "Existing app service plan resource id"
-          }
-      },
-      "dbfqdn": {
-          "type": "string",
-          "metadata": {
-              "description": "Existing sql server fully qualified domain name"
-          }
-      },
-      "databaseName": {
-          "type": "string",
-          "metadata": {
-              "description": "Existing database name"
-          }
-      },
-      "sqlAdministratorLogin": {
-          "type": "string",
-          "metadata": {
-              "description": "Existing database sql admin login name"
-          }
-      },
-      "sqlAdministratorLoginPassword" : {
-          "type": "string",
-          "metadata": {
-              "description": "Existing database sql admin password"
-          }
-      },
-      "existingKeyVaultId" : {
-        "type": "string",
-        "metadata": {
-            "description": "Pre-existing Key Vault for source certs and secrets. Not the key vault for this application solution."
-        }    
-      },
-      "existingKeyVaultSecretName" : {
-        "type": "string",
-        "metadata": {
-            "description": "Pre-existing Key Vault secret for source certs and secrets. Not the key vault for this application solution."
-        }    
-      },
-      "certificateName" : {
-        "type": "string",
-        "metadata": {
-            "description": "SSL certificate"
-        }
-      }
     },
     "variables": {
-        "webSiteName": "[concat(parameters('webAppName'), '-', uniqueString(resourceGroup().id))]"
+        "hostingPlanName": "[concat('hpn-', resourceGroup().name)]"
     },
     "resources": [
-      {
-        // web app certificates 
-        /*
-         Notes: For ecommerce website. Using Godaddy certificate.
-        */
-        "type": "Microsoft.Web/certificates",
-        "name": "[parameters('certificateName')]",
-        "apiVersion": "2015-08-01",
-        "location": "[parameters('location')]",
-        "properties": {
-          "keyVaultId": "[parameters('existingKeyVaultId')]",
-          "keyVaultSecretName": "[parameters('existingKeyVaultSecretName')]",
-          "serverFarmId": "[parameters('appserviceplanId')]"
-        }
-      }, 
-      
-      {
-          "apiVersion": "2015-08-01",
-          "name": "[variables('webSiteName')]",
-          "type": "Microsoft.Web/sites",
-          "kind": "functionapp",
-          "location": "[parameters('location')]",
-          "identity": { "type": "SystemAssigned" },
-          "tags": {
-            "[concat('hidden-related:', parameters('hostingPlan'))]": "empty",
-            "displayName": "Website"
-          },
-          "dependsOn": [
-            "[parameters('certificateName')]"
-          ],
-          "properties": {
-            "name": "[variables('webSiteName')]",
-            "serverFarmId": "[parameters('appserviceplanId')]",
-            "httpsOnly": true,
-            "siteConfig": {
-              "AlwaysOn": true,
-              "appSettings": [
-                {
-                  "name": "FUNCTIONS_EXTENSION_VERSION",
-                  "value": "~1"
-                },
-                {
-                  "name": "DatabaseConnectionString",
-                  "value": "[concat('Server=tcp:', parameters('dbfqdn'),',1433;Initial Catalog=', parameters('databaseName'), ';Persist Security Info=False;User Id=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
-                }
-              ]
-            },
-            "hostNameSslStates": [
-              {
-                "name": "[parameters('customHostname')]",
-                "sslState": "SniEnabled",
-                "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', parameters('certificateName'))).Thumbprint]",
-                "toUpdate": true
-              }
-            ]
-          },
-        "resources": [
-            
-            {
-              "apiVersion": "2015-08-01",
-              "type": "config",
-              "name": "connectionstrings",
-              "dependsOn": [
-                "[variables('webSiteName')]"
-              ],
-              "properties": {
-                "DefaultConnection": {
-                  "value": "[concat('Server=tcp:', parameters('dbfqdn'),',1433;Initial Catalog=', parameters('databaseName'), ';Persist Security Info=False;User Id=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
-                  "type": "SQLAzure"
-                }
-              }
-            }
-            // {
-            //   "apiVersion": "2015-08-01",
-            //   "name": "web",
-            //   "type": "sourcecontrols",
-            //   "dependsOn": [
-            //     "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
-            //   ],
-            //   "properties": {
-            //     "RepoUrl": "[parameters('repoURL')]",
-            //     "branch": "[parameters('branch')]",
-            //     "IsManualIntegration": true
-            //   }
-            // }
-          ]
-      },
-      {
-        "apiVersion": "2016-08-01",
-        "name": "[concat(variables('websiteName'),'/',parameters('customHostname'))]",
-        "type": "Microsoft.Web/sites/hostNameBindings",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
-        ],
-        "properties": {
-          "domainId": null,
-          "hostNameType": "Verified",
-          "siteName": "parameters('websiteName')"
-        }
-      }
-
-    ],
-    "outputs": {
-        "websiteId" : 
         {
-            "value": "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]",
-			"type" : "string"
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('sku')]",
+                "capacity": "[parameters('workerSize')]"
+            },
+            "properties": {
+                "name": "[variables('hostingPlanName')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('siteName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[variables('hostingPlanName')]"
+            },
+            "resources": [
+                {
+                    "type": "sourcecontrols",
+                    "apiVersion": "2018-02-01",
+                    "name": "web",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+                    ],
+                    "properties": {
+                        "repoUrl": "[parameters('repoURL')]",
+                        "branch": "[parameters('branch')]",
+                        "isManualIntegration": true
+                    }
+                }
+            ]
         }
-    }
+    ]
 }
