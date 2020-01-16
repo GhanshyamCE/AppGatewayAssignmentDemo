@@ -260,7 +260,7 @@
     //   }
     // },
     {
-    "apiVersion": "2018-05-01",
+    "apiVersion": "2015-01-01",
     "name": "linkedTemplate-sqlserver",
     "type": "Microsoft.Resources/deployments",
     "dependsOn": [],
@@ -268,7 +268,7 @@
         "mode": "incremental",
         "templateLink": {
             "uri": "[uri(deployment().properties.templateLink.uri, 'azuredeploy-sqlserver.json')]",
-            "contentVersion": "1.0.0.1"
+            "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "sqlserver-name": {
