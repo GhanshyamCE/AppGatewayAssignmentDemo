@@ -2,9 +2,6 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "sqlserver-name": {
-      "value": "testgatewayglobantsqlserver"
-    },
     "appPlan-name": {
       "value": "FunctionAppPlan"
     },
@@ -17,18 +14,20 @@
     "customHostname": {
       "value": "rkfunction.rkim.ca"
     },
-    
+    "sqlserver-name": {
+      "value": "appgatewaytestsqlserver"
+    },
     "sqldatabase-name": {
-      "value": "rkfunctiondb"
+      "value": "appgatewaytestdb"
     },
     "sqlAdministratorLogin": {
-      "value": "sqladmin"
+      "value": "appgatewaytestadmin"
     },
     "sqlAdministratorLoginPassword": {
-      "value": "Password007"
+      "value": "abcd#886"
     },
     "keyVaultName": {
-      "value":  "rkkv"
+      "value":  "appgatewaytestkeyvault"
     },
     "objectId": {
       "value": "f10271cb-e59a-4cce-874b-963d33f06cc7"
