@@ -311,6 +311,65 @@
           }  
       }
     }
+  },
+    {
+    "apiVersion": "2018-05-01",
+    "name": "linkedTemplate-website",
+    "type": "Microsoft.Resources/deployments",
+    "dependsOn": ["linkedTemplate-appserviceplan", "linkedTemplate-sqlserver"],
+    "properties": {
+        "mode": "incremental",
+        "templateLink": {
+            "uri": "[uri(deployment().properties.templateLink.uri, 'azuredeploy-website.json')]",
+            "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "webAppName": {
+            "value": "[parameters('webAppName')]"
+          },
+          "customHostname": {
+            "value": "[parameters('customHostname')]"
+          },
+          "repoURL": {
+            "value": "[parameters('repoURL')]"
+          },
+          "branch": {
+            "value": "[parameters('branch')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "dbfqdn" : { 
+            "value" : "[reference('linkedTemplate-sqlserver').outputs.dbfqdn.value]"
+          },
+          "databaseName": {
+            "value": "[parameters('sqldatabase-name')]"
+          },
+          "sqlAdministratorLogin": {
+            "value": "[parameters('sqlAdministratorLogin')]"
+          },
+          "sqlAdministratorLoginPassword": {
+            "reference": {
+              "keyVault": {
+                  "id": "[reference('linkedTemplate-keyvault').outputs.rkkeyvault.value]" 
+              },
+              "secretName": "[variables('dbpasswordsecretName')]"
+            }
+          },
+          "appservicePlanId" : { 
+            "value" : "[reference('linkedTemplate-appserviceplan').outputs.appserviceplan.value]"
+          },
+          "existingKeyVaultId": {
+              "value": "[parameters('existingKeyVaultId')]"
+          },
+          "existingKeyVaultSecretName": {
+              "value": "[parameters('existingKeyVaultSecretName')]"
+          },
+          "certificateName": {
+            "value": "[parameters('certificateName')]"
+          }
+      }
+    }
   }
   
 ],
