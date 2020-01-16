@@ -241,12 +241,7 @@
           "webAppName": {
             "value": "[parameters('webAppName')]"
           },
-          "customHostname": {
-            "value": "[parameters('customHostname')]"
-          },
-          "repoURL": {
-            "value": "[parameters('repoURL')]"
-          },
+          
           "branch": {
             "value": "[parameters('branch')]"
           },
@@ -262,10 +257,8 @@
           },
           "sqlAdministratorLoginPassword": {
             "value" : "[parameters('sqlAdministratorLoginPassword')]"
-          },
-          "appservicePlanId" : { 
-            "value" : "[reference('linkedTemplate-appserviceplan').outputs.appserviceplan.value]"
           }
+         
         
       }
     }
