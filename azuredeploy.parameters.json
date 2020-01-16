@@ -40,7 +40,7 @@
     },
     "certificateName": {
       "value": "rkim"
-    }
+    },
      "secretsObject": {
       "value": {
         "secrets": [
