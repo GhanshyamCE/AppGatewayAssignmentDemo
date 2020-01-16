@@ -351,23 +351,15 @@
           "sqlAdministratorLoginPassword": {
             "reference": {
               "keyVault": {
-                  "id": "[reference('linkedTemplate-keyvault').outputs.rkkeyvault.value]" 
+                  "id": "[reference('linkedTemplate-keyvault').outputs.keyvault.value]" 
               },
               "secretName": "[variables('dbpasswordsecretName')]"
             }
           },
           "appservicePlanId" : { 
             "value" : "[reference('linkedTemplate-appserviceplan').outputs.appserviceplan.value]"
-          },
-          "existingKeyVaultId": {
-              "value": "[parameters('existingKeyVaultId')]"
-          },
-          "existingKeyVaultSecretName": {
-              "value": "[parameters('existingKeyVaultSecretName')]"
-          },
-          "certificateName": {
-            "value": "[parameters('certificateName')]"
           }
+        
       }
     }
   }
