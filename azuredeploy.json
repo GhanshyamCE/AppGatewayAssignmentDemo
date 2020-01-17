@@ -233,6 +233,7 @@
     "type": "Microsoft.Resources/deployments",
     "dependsOn": [],
     "properties": {
+        "mode": "incremental",
         "templateLink": {
             "uri": "[uri(deployment().properties.templateLink.uri, 'azuredeploy-website.json')]",
             "contentVersion": "1.0.0.0"
