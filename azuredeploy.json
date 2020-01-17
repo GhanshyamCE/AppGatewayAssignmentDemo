@@ -267,12 +267,7 @@
           "description": "URL of Azure Web App 1"
         }
       },
-      "azureWebapp2": {
-        "type": "string",
-        "metadata": {
-          "description": "URL of Azure Web App 2"
-        }
-      },
+     
       "probeEnabled": {
         "type": "bool",
         "defaultValue": true,
