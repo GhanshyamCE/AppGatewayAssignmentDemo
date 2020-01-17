@@ -18,6 +18,12 @@
     "sqldatabase-name": {
       "value": "appgatewaytestdb"
     },
+     "sqlAdministratorLogin": {
+      "value": "appgatewaytestadmin"
+    },
+    "sqlAdministratorLoginPassword": {
+      "value": "abcd#886"
+    },
     "keyVaultName": {
       "value":  "appgatewaytestkeyvault"
     },
