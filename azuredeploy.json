@@ -366,6 +366,23 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+              "dbfqdn" : { 
+            "value" : "[reference('linkedTemplate-sqlserver').outputs.dbfqdn.value]"
+          },
+          "databaseName": {
+            "value": "[parameters('sqldatabase-name')]"
+          },
+          "sqlAdministratorLogin": {
+            "value": "[parameters('sqlAdministratorLogin')]"
+          },
+          "sqlAdministratorLoginPassword": {
+            "reference": {
+              "keyVault": {
+                  "id": "[reference('linkedTemplate-keyvault').outputs.rkkeyvault.value]" 
+              },
+              "secretName": "[variables('dbpasswordsecretName')]"
+            }
           }
           
         
