@@ -15,7 +15,9 @@
     "sqlserver-name": {
       "value": "appgatewaytestsqlserver"
     },
-   
+    "sqldatabase-name": {
+      "value": "appgatewaytestdb"
+    },
     "keyVaultName": {
       "value":  "appgatewaytestkeyvault"
     },
