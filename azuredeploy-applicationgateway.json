@@ -164,10 +164,8 @@
                 "BackendAddresses": [
                   {
                     "IpAddress": "[parameters('azureWebApp1')]"
-                  },
-                  {
-                    "IpAddress": "[parameters('azureWebApp2')]"
                   }
+                  
                 ]
               }
             }
