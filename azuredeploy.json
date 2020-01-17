@@ -215,7 +215,71 @@
     "metadata": {
         "description": "Name given to certificate for TLS/SSL support for azure app service"
     }    
-  }
+  },
+   "addressPrefix": {
+        "type": "string",
+        "defaultValue": "10.0.0.0/16",
+        "metadata": {
+          "description": "Address prefix for the Virtual Network"
+        }
+      },
+      "subnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.0.0.0/28",
+        "metadata": {
+          "description": "Subnet prefix"
+        }
+      },
+      "applicationGatewaySize": {
+        "type": "string",
+        "allowedValues": [
+          "Standard_Small",
+          "Standard_Medium",
+          "Standard_Large"
+        ],
+        "defaultValue": "Standard_Medium",
+        "metadata": {
+          "description": "application gateway size"
+        }
+      },
+      "capacity": {
+        "type": "int",
+        "allowedValues": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "defaultValue": 2,
+        "metadata": {
+          "description": "Number of instances"
+        }
+      },
+      "azureWebapp1": {
+        "type": "string",
+        "metadata": {
+          "description": "URL of Azure Web App 1"
+        }
+      },
+      "azureWebapp2": {
+        "type": "string",
+        "metadata": {
+          "description": "URL of Azure Web App 2"
+        }
+      },
+      "probeEnabled": {
+        "type": "bool",
+        "defaultValue": true,
+        "metadata": {
+          "description": "Probe Enabled"
+        }
+      }
 },
   "variables": {
     "webSiteName": "[concat(parameters('webAppName'), '-', uniqueString(resourceGroup().id))]",
