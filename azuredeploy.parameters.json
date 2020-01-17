@@ -25,7 +25,7 @@
     },
     "probeEnabled": {
       "value": true
-    }
+    },
     "customHostname": {
       "value": "rkfunction.rkim.ca"
     },
