@@ -49,6 +49,30 @@
                 "description": "The instance size of the hosting plan (small, medium, or large)."
             }
         },
+         "dbfqdn": {
+          "type": "string",
+          "metadata": {
+              "description": "Existing sql server fully qualified domain name"
+          }
+      },
+      "databaseName": {
+          "type": "string",
+          "metadata": {
+              "description": "Existing database name"
+          }
+      },
+      "sqlAdministratorLogin": {
+          "type": "string",
+          "metadata": {
+              "description": "Existing database sql admin login name"
+          }
+      },
+      "sqlAdministratorLoginPassword" : {
+          "type": "string",
+          "metadata": {
+              "description": "Existing database sql admin password"
+          }
+      },
         "repoURL": {
             "type": "string",
             "defaultValue": "https://github.com/GhanshyamCE/webappgatewaylatest.git",
