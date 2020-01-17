@@ -313,8 +313,19 @@
         
       }
     }
+  }, {
+      "apiVersion": "2015-01-01",
+      "name": "linkedTemplate-applicationgateway",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+          "mode": "incremental",
+          "templateLink": {
+              "uri": "[uri(deployment().properties.templateLink.uri, 'azuredeploy-applicationgateway.json')]",
+              "contentVersion": "1.0.0.0"
+          }
+         
+      }
   }
-  
 ]
  
 }
