@@ -8,24 +8,14 @@
     "appPlan-skuName": {
       "value": "S1"
     },
-    "webAppName": {
-      "value": "rkfunction"
-    },
+   
     "customHostname": {
       "value": "rkfunction.rkim.ca"
     },
     "sqlserver-name": {
       "value": "appgatewaytestsqlserver"
     },
-    "sqldatabase-name": {
-      "value": "appgatewaytestdb"
-    },
-    "sqlAdministratorLogin": {
-      "value": "appgatewaytestadmin"
-    },
-    "sqlAdministratorLoginPassword": {
-      "value": "abcd#886"
-    },
+   
     "keyVaultName": {
       "value":  "appgatewaytestkeyvault"
     },
