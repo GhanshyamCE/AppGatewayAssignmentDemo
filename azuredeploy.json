@@ -239,27 +239,15 @@
             "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "webAppName": {
-            "value": "[parameters('webAppName')]"
-          },
-          
+                   
           "branch": {
             "value": "[parameters('branch')]"
           },
           "location": {
             "value": "[parameters('location')]"
-          },
-          
-          "databaseName": {
-            "value": "[parameters('sqldatabase-name')]"
-          },
-          "sqlAdministratorLogin": {
-            "value": "[parameters('sqlAdministratorLogin')]"
-          },
-          "sqlAdministratorLoginPassword": {
-            "value" : "[parameters('sqlAdministratorLoginPassword')]"
           }
-         
+          
+        
         
       }
     }
