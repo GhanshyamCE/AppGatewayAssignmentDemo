@@ -8,7 +8,24 @@
     "appPlan-skuName": {
       "value": "S1"
     },
-   
+    "addressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "subnetPrefix": {
+      "value": "10.0.0.0/28"
+    },
+    "applicationGatewaySize": {
+      "value": "Standard_Medium"
+    },
+    "capacity": {
+      "value": 2
+    },
+    "azureWebApp1": {
+      "value": "webapp-pybk76ep7uhea.azurewebsites.net"
+    },
+    "probeEnabled": {
+      "value": true
+    }
     "customHostname": {
       "value": "rkfunction.rkim.ca"
     },
