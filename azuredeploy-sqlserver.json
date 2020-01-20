@@ -82,8 +82,8 @@
             "location": "[parameters('location')]",
             "name": "rule1",
             "properties": {
-              "endIpAddress": "0.0.0.1",
-              "startIpAddress": "255.255.255.254"
+              "startIpAddress": "0.0.0.1",
+              "endIpAddress": "255.255.255.254"
             }
           }
         ]
